@@ -1,3 +1,4 @@
+
 # PCB MST Optimizer
 
 Karmaşık bir elektronik anakart (PCB) üzerindeki bileşenlerin (dirençler, kapasitörler, IC'ler vb.) birbirine bağlanmasını **Minimum Spanning Tree (MST)** algoritması ile optimize eden web tabanlı simülasyon sistemi.
