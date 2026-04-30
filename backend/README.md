@@ -12,7 +12,7 @@ backend/
 │   ├── data_structures/     # Sıfırdan yazılmış veri yapıları
 │   │   ├── graph.py         # Graph (komşuluk listesi)
 │   │   ├── union_find.py    # Disjoint Set / Union-Find
-│   │   ├── queue.py         # FIFO Queue (BFS için)
+│   │   ├── linked_queue.py  # FIFO Queue (BFS için, linked list)
 │   │   └── stack.py         # LIFO Stack (DFS için)
 │   ├── algorithms/          # MST + dolaşım algoritmaları
 │   │   ├── kruskal.py
@@ -34,6 +34,7 @@ docker-compose up backend
 
 API dokümantasyonu: `http://localhost:8000/docs`
 
-## Sorumlu
+## Sorumlular
 
-Üye 1 — `feature/uye1-backend-data-structures`
+- **Üye 1** (`feature/uye1-backend-data-structures`) — `data_structures/`
+- **Üye 2** (`feature/uye2-algorithms-api`) — `algorithms/`, `api/`, `services/`, `models/`, Dockerfile
