@@ -11,7 +11,7 @@ Karmaşık bir elektronik anakart (PCB) üzerindeki bileşenlerin (dirençler, k
 
 | Üye | İsim | GitHub | Sorumluluk | Branch |
 |---|---|---|---|---|
-| 1 | Mehmet Kusgul | — | Backend / Veri Yapıları | `feature/uye1-backend-data-structures` |
+| 1 | Mehmet Kusgul | https://github.com/mehmetkusgul| Backend / Veri Yapıları | `feature/uye1-backend-data-structures` |
 | 2 | Sinasi Onuralp Akkurt | [@onuralpakkurt](https://github.com/onuralpakkurt) | Algoritma / API | `feature/uye2-algorithms-api` |
 | 3 | Zafer Tuna | — | Frontend / AI Servisi | `feature/uye3-frontend-ai` |
 
