@@ -8,9 +8,9 @@ Bileşenler birer **düğüm**, aralarında çekilebilecek olası bağlantılar 
 
 ---
 
-## 📄 Detaylı Proje Raporu
+##  Detaylı Proje Raporu
 
-> ## 👉 **[Tam Proje Raporu → `docs/PROJE_RAPORU.md`](docs/PROJE_RAPORU.md)**
+> ##  **[Tam Proje Raporu → `docs/PROJE_RAPORU.md`](docs/PROJE_RAPORU.md)**
 >
 > **UML diyagramları · Big-O (zaman/uzay) analizi · AI prompt dökümü · test sonuçları** — hepsi tek dosyada. GitHub'da diyagramlar otomatik render olur.
 
