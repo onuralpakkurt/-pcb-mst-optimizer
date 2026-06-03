@@ -3,10 +3,13 @@ import random
 import json
 import re
 import httpx
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
+
+load_dotenv()
 
 app = FastAPI(
     title="PCB MST AI Service",
@@ -22,7 +25,7 @@ app.add_middleware(
 )
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
 PCB_COMPONENTS = (
     [f"R{i}" for i in range(1, 21)] +
@@ -119,7 +122,14 @@ SADECE aşağıdaki JSON formatında yanıt ver, başka hiçbir şey yazma:
 
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.7, "maxOutputTokens": 1024}
+        "generationConfig": {
+            "temperature": 0.7,
+            "maxOutputTokens": 8192,
+            "responseMimeType": "application/json",
+            # gemini-2.5-flash bir "thinking" modeldir; düşünme token bütçesini
+            # 0 yaparak tüm çıktının asıl JSON yanıtına ayrılmasını garantile.
+            "thinkingConfig": {"thinkingBudget": 0},
+        },
     }
 
     async with httpx.AsyncClient(timeout=15.0) as client:

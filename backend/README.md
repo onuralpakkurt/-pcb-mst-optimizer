@@ -18,8 +18,10 @@ backend/
 │   │   ├── kruskal.py
 │   │   ├── bfs.py
 │   │   └── dfs.py
-│   └── services/            # State yönetimi (thread-safe)
-└── tests/                   # Birim testler
+│   ├── services/            # State yönetimi (thread-safe, asyncio.Lock)
+│   └── models/              # Pydantic şemaları
+├── requirements.txt
+└── Dockerfile
 ```
 
 ## Çalıştırma
