@@ -1,9 +1,18 @@
-
 # PCB MST Optimizer
 
-Karmaşık bir elektronik anakart (PCB) üzerindeki bileşenlerin (dirençler, kapasitörler, IC'ler vb.) birbirine bağlanmasını **Minimum Spanning Tree (MST)** algoritması ile optimize eden web tabanlı simülasyon sistemi.
+Karmaşık bir elektronik anakart (PCB) üzerindeki bileşenleri — dirençler, kapasitörler, entegreler, güç hatları — birbirine **en az toplam maliyetle, döngü oluşturmadan ve hiçbirini dışarıda bırakmadan** bağlayan en uygun bağlantı ağını bulan web tabanlı bir simülasyon sistemi.
+
+Bileşenler birer **düğüm**, aralarında çekilebilecek olası bağlantılar **ağırlıklı kenar** olarak modellenir. **Kruskal algoritması** bu kenarlar arasından, tüm bileşenleri en ucuz şekilde birbirine bağlayan ağacı (**Minimum Spanning Tree**) seçer. Kullanıcı arayüzden yeni düğüm/kenar ekledikçe ağ anında yeniden hesaplanıp görselleştirilir.
 
 > Veri Yapıları dersi grup projesi — Bahar 2026
+
+---
+
+## 📄 Detaylı Proje Raporu
+
+> ## 👉 **[Tam Proje Raporu → `docs/PROJE_RAPORU.md`](docs/PROJE_RAPORU.md)**
+>
+> **UML diyagramları · Big-O (zaman/uzay) analizi · AI prompt dökümü · test sonuçları** — hepsi tek dosyada. GitHub'da diyagramlar otomatik render olur.
 
 ---
 
@@ -17,111 +26,75 @@ Karmaşık bir elektronik anakart (PCB) üzerindeki bileşenlerin (dirençler, k
 
 ---
 
-## Hedef
+## Nasıl Çalışır?
 
-PCB bileşenlerini düğüm, aralarındaki olası bağlantıları ağırlıklı kenar olarak modelleyip:
+Sistem, birbirinden bağımsız çalışan **üç mikroservisten** oluşur ve tek bir `docker compose up` komutuyla ayağa kalkar:
 
-- Toplam bağlantı maliyeti **minimum**,
-- Tüm bileşenleri **bağlayan**,
-- **Döngü içermeyen**
-
-bir bağlantı ağı (MST) hesaplayan, görselleştiren ve dinamik düğüm eklemeye izin veren tam fonksiyonel bir sistem.
-
----
-
-## Mimari
-
-3 bağımsız mikroservis, hepsi `docker-compose up` ile tek komutta ayağa kalkar:
+- **Frontend** (Vanilla HTML + JavaScript + Cytoscape.js) — Grafı tarayıcıda çizer. "MST hesapla" dendiğinde seçilen kenarlar **yeşil animasyonla** belirir; kullanıcı düğüm veya kenar ekledikçe ağ güncellenir ve MST yeniden hesaplanır.
+- **Backend** (Python / FastAPI) — Projenin kalbi. Graf, Union-Find, Queue ve Stack **sıfırdan** yazılmıştır; Kruskal MST hesabı ile BFS/DFS bağlılık testleri burada koşar ve REST API üzerinden sunulur.
+- **AI Service** (Python / Google Gemini) — Test için sentetik PCB topolojileri üretir. Gemini anahtarı yoksa deterministik rastgele üretime (fallback) düşerek **her durumda** geçerli bir graf döndürür. Optimizasyon kararı vermez; o iş tamamen backend'in kendi algoritmalarındadır.
 
 ```
 [Frontend]  ←→  [Backend API]  ←→  [AI Service]
-HTML + JS       Python/FastAPI      Python/Gemini
-Cytoscape.js    Kruskal + UF        sentetik graf
+ :3000           :8000              :8001
 ```
 
-- **Backend** (Python 3.11 / FastAPI): Sıfırdan yazılmış veri yapıları + Kruskal MST algoritması + REST API
-- **Frontend** (Vanilla HTML + JavaScript + Cytoscape.js): Graf görselleştirme, MST animasyonu, dinamik düğüm/kenar ekleme
-- **AI Service** (Python / Gemini API): Test için sentetik PCB topolojisi üretir (random graf)
+---
+
+## Sıfırdan Yazılan Veri Yapıları
+
+Şartname gereği hazır veri yapısı kütüphaneleri (`heapq`, `collections.deque`, `networkx` vb.) kullanılmadan, tümü `backend/app/data_structures/` altında elle yazıldı:
+
+- **Graph** — Komşuluk listesi (dict-of-dict), yönsüz ve ağırlıklı; devre topolojisini modeller.
+- **Union-Find** — Path compression + union by rank; Kruskal'da döngüleri engeller, neredeyse sabit zamanda çalışır.
+- **Queue** — Tekli bağlı liste (head + tail işaretçili); BFS için gerçek O(1) ekleme/çıkarma sağlar.
+- **Stack** — LIFO; DFS dolaşımında kullanılır.
 
 ---
 
-## Teknolojiler
+## Algoritmalar ve Karmaşıklık
 
-- **Backend:** Python 3.11, FastAPI, Uvicorn, Pydantic
-- **Frontend:** HTML5, Vanilla JavaScript (ES6+), Cytoscape.js
-- **AI:** Python 3.11, FastAPI, Google Gemini API
-- **DevOps:** Docker, Docker Compose, GitHub (PR + branch protection)
-
----
-
-## Algoritma ve Karmaşıklık
+Tüm bileşenleri minimum maliyetle bağlayan ağ **Kruskal** ile bulunur; grafın bağlı olup olmadığı **BFS/DFS** ile doğrulanır.
 
 | Algoritma / Yapı | Karmaşıklık | Kullanım |
 |---|---|---|
 | Kruskal (MST) | O(E log E) | MST hesaplama |
-| Union-Find (PC + UbR) | O(α(N)) ≈ O(1) amortize | Kruskal'da döngü kontrolü |
-| BFS / DFS | O(V + E) | Graf bağlantılılık testi |
-| Graph (komşuluk listesi) | add: O(1), traverse: O(V+E) | Graf modeli |
+| Union-Find (PC + UbR) | ~O(1) amortize | Döngü kontrolü |
+| BFS / DFS | O(V + E) | Bağlılık testi |
 
-Detaylı analiz: [`docs/complexity_analysis.md`](docs/complexity_analysis.md)
-
----
-
-## Veri Yapıları (Sıfırdan)
-
-Şartname gereği hazır kütüphane (heapq, collections.deque, networkx vb.) kullanılmadı. Tüm veri yapıları sınıf bazlı, sıfırdan yazıldı:
-
-- **`Graph`** — Komşuluk listesi (dict-of-dict), undirected, ağırlıklı
-- **`UnionFind`** — Path compression + union by rank
-- **`Queue`** — Singly linked list, head + tail pointer (BFS için)
-- **`Stack`** — LIFO yapı (DFS için)
-
-Konum: `backend/app/data_structures/`
+Ayrıntılı türetme ve gerçek ölçümler (100 düğüm / 250 kenar → ~5 ms) [proje raporunda](docs/PROJE_RAPORU.md).
 
 ---
 
-## Branch Stratejisi
+## Çalıştırma
 
-- `main` — korumalı dal, sadece **PR ile merge**, doğrudan push yasak
-- `feature/uye1-backend-data-structures` — Üye 1
-- `feature/uye2-algorithms-api` — Üye 2
-- `feature/uye3-frontend-ai` — Üye 3
+### Docker (önerilen — tek komut)
 
-Her özellik kendi branch'inde geliştirilir, code review (≥1 onay) sonrası `main`'e merge edilir.
+```bash
+# (opsiyonel) AI için Gemini anahtarı — verilmezse fallback çalışır
+echo "GEMINI_API_KEY=..." > .env
 
----
+docker compose up --build
+```
 
-## Güncel Durum
+- Arayüz → http://localhost:3000
+- API (Swagger UI) → http://localhost:8000/docs
 
-### Tamamlanan
-- [x] GitHub reposu kuruldu
-- [x] Branch koruma kuralı aktif
-- [x] 3 feature branch oluşturuldu
-- [x] Klasör iskeleti
-- [x] Veri yapıları (Graph, UnionFind, Queue, Stack) — Üye 1
-- [x] Backend dosya yapısı (`backend/app/`)
-- [x] FastAPI iskelet + temel endpoint'ler — Üye 2
-- [x] Kruskal MST algoritması — Üye 2
-- [x] BFS / DFS algoritmaları — Üye 2
-- [x] Backend Dockerfile — Üye 2
-- [x] Karmaşıklık analizi taslağı
+### Yerel (sadece backend)
 
-### Devam Eden / Yapılacak
-- [ ] Birim testler (Üye 1)
-- [ ] AI servisi (Üye 3)
-- [ ] Frontend (Üye 3)
-- [ ] AI servisi Dockerfile (Üye 3)
-- [ ] Frontend Dockerfile (Üye 3)
-- [ ] docker-compose ile entegre çalıştırma (3 servis hazır olunca)
-- [ ] UML diyagramları
-- [ ] AI prompt logları (`docs/ai_prompts.md`)
-- [ ] Demo videosu (≤10 dk)
+```bash
+cd backend
+python -m venv venv
+source venv/Scripts/activate        # Linux/Mac: source venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+Sistem; bilinen graflarda MST sonuçları elle doğrulanarak, sınır durumlar (kopuk graf, self-loop, boş graf) ve üç servisin Docker'la birlikte çalışması üzerinden uçtan uca test edilmiştir (ayrıntılar raporun test bölümünde).
 
 ---
 
-## API Önizleme
-
-Backend ayaktayken Swagger UI: `http://localhost:8000/docs`
+## API Özeti
 
 | Method | Endpoint | Amaç |
 |---|---|---|
@@ -135,33 +108,9 @@ Backend ayaktayken Swagger UI: `http://localhost:8000/docs`
 
 ---
 
-## Kurulum (Lokal Geliştirme)
+## Sürüm Kontrolü
 
-```bash
-# Repo klonla
-git clone https://github.com/onuralpakkurt/-pcb-mst-optimizer.git
-cd -pcb-mst-optimizer/backend
-
-# Sanal ortam (Windows / bash)
-python -m venv venv
-source venv/Scripts/activate    # Linux/Mac: source venv/bin/activate
-
-# Bağımlılıkları yükle
-pip install -r requirements.txt
-
-# Backend'i çalıştır
-uvicorn app.main:app --reload
-
-# Tarayıcıda aç:
-# http://localhost:8000/docs   ← Swagger UI
-# http://localhost:8000/health ← health check
-```
-
-## Kurulum (Docker — yapım aşamasında)
-
-```bash
-docker-compose up --build
-```
+`main` korumalı daldır — doğrudan push yapılmaz. Geliştirme her üyenin kendi feature branch'inde yürütülür, kod incelemesinden sonra Pull Request ile `main`'e merge edilir.
 
 ---
 
