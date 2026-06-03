@@ -39,3 +39,21 @@ async def root():
 @app.get("/health", tags=["meta"])
 async def health():
     return {"status": "ok", "service": "pcb-mst-backend"}
+
+
+def get_team_members():
+    """
+    Returns the list of team members without Turkish characters
+    as per the Project Naming Standard.
+    """
+    return [
+        {"role": "Backend / Veri Yapilari", "name": "Mehmet Kusgul"},
+        {"role": "Algoritma / API", "name": "Sinasi Onuralp Akkurt"},
+        {"role": "Frontend / AI Servisi", "name": "Zafer Tuna"}
+    ]
+
+
+@app.get("/api/team", tags=["meta"])
+async def team_endpoint():
+    return get_team_members()
+

@@ -99,6 +99,7 @@ Her özellik kendi branch'inde geliştirilir, code review (≥1 onay) sonrası `
 - [x] 3 feature branch oluşturuldu
 - [x] Klasör iskeleti
 - [x] Veri yapıları (Graph, UnionFind, Queue, Stack) — Üye 1
+- [x] Birim testler (Üye 1)
 - [x] Backend dosya yapısı (`backend/app/`)
 - [x] FastAPI iskelet + temel endpoint'ler — Üye 2
 - [x] Kruskal MST algoritması — Üye 2
@@ -107,7 +108,6 @@ Her özellik kendi branch'inde geliştirilir, code review (≥1 onay) sonrası `
 - [x] Karmaşıklık analizi taslağı
 
 ### Devam Eden / Yapılacak
-- [ ] Birim testler (Üye 1)
 - [ ] AI servisi (Üye 3)
 - [ ] Frontend (Üye 3)
 - [ ] AI servisi Dockerfile (Üye 3)
