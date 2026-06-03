@@ -12,7 +12,7 @@ Bileşenler birer **düğüm**, aralarında çekilebilecek olası bağlantılar 
 
 > ##  **[Tam Proje Raporu → `docs/PROJE_RAPORU.md`](docs/PROJE_RAPORU.md)**
 >
-> **UML diyagramları · Big-O (zaman/uzay) analizi · AI prompt dökümü · test sonuçları** — hepsi tek dosyada. GitHub'da diyagramlar otomatik render olur.
+> **UML diyagramları · Big-O (zaman/uzay) analizi · AI prompt dökümü · test sonuçları** 
 
 ---
 
