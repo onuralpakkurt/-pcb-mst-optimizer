@@ -2,6 +2,7 @@
 
 Karmaşık bir elektronik anakart (PCB) üzerindeki bileşenleri — dirençler, kapasitörler, entegreler, güç hatları — birbirine **en az toplam maliyetle, döngü oluşturmadan ve hiçbirini dışarıda bırakmadan** bağlayan en uygun ağı bulan web tabanlı bir simülasyon sistemi.
 
+
 Bileşenler birer **düğüm**, aralarında çekilebilecek olası bağlantılar **ağırlıklı kenar** olarak modellenir. **Kruskal algoritması** bu kenarlar arasından tüm bileşenleri en ucuz şekilde birbirine bağlayan ağacı — **Minimum Spanning Tree (MST)** — seçer. Kullanıcı arayüzden yeni düğüm/kenar ekledikçe ağ anında yeniden hesaplanıp görselleştirilir.
 
 > Veri Yapıları dersi grup projesi — Bahar 2026
@@ -11,6 +12,7 @@ Bileşenler birer **düğüm**, aralarında çekilebilecek olası bağlantılar 
 ##  Detaylı Proje Raporu
 
 > ##  **[Tam Proje Raporu → `docs/PROJE_RAPORU.md`](docs/PROJE_RAPORU.md)**
+> **Youtube Proje Anlatım Linki:https://youtu.be/mBiK__LdnnA**
 >
 > **UML diyagramları · Big-O (zaman/uzay) analizi · AI prompt dökümü · test sonuçları** 
 
