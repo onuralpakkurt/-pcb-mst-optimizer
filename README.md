@@ -117,18 +117,43 @@ Ayrıntılı türetme ve gerçek ölçümler (100 düğüm / 250 kenar → ~5 ms
 
 ```
 pcb-mst-optimizer/
-├── backend/                  # FastAPI — veri yapıları, Kruskal, REST API
-│   └── app/
-│       ├── data_structures/  # Graph, UnionFind, Queue, Stack (sıfırdan)
-│       ├── algorithms/       # kruskal, bfs, dfs
-│       ├── api/              # REST endpoint'leri
-│       ├── services/         # graf state yönetimi (thread-safe)
-│       └── models/           # Pydantic şemaları
-├── ai-service/               # Gemini ile sentetik topoloji + fallback
-├── frontend/                 # index.html + Cytoscape.js (nginx ile sunulur)
-├── docs/
-│   └── PROJE_RAPORU.md       # UML + Big-O + AI prompt dökümü (detaylı rapor)
-└── docker-compose.yml        # 3 servisi tek komutta ayağa kaldırır
+├── backend/                       # Backend API Servisi (Python & FastAPI)
+│   ├── app/
+│   │   ├── algorithms/            # Graf Algoritmaları
+│   │   │   ├── bfs.py             # BFS bağlılık testi
+│   │   │   ├── dfs.py             # DFS bağlılık testi
+│   │   │   └── kruskal.py         # Kruskal MST optimizasyonu
+│   │   ├── api/                   # REST API Endpoint Yönlendiricileri
+│   │   │   ├── graph_routes.py    # Graf yönetimi, düğüm/kenar ekleme API'leri
+│   │   │   └── mst_routes.py      # MST hesaplama API'si
+│   │   ├── data_structures/       # Sıfırdan yazılan veri yapıları
+│   │   │   ├── graph.py           # Komşuluk listesi graf modeli
+│   │   │   ├── union_find.py      # Döngü engelleme için Disjoint-Set yapısı
+│   │   │   ├── linked_queue.py    # BFS için kuyruk yapısı
+│   │   │   └── stack.py           # DFS için yığın yapısı
+│   │   ├── models/                # Pydantic veri doğrulama modelleri
+│   │   ├── services/              # Grafın hafızada thread-safe tutulmasını sağlayan servis
+│   │   └── main.py                # Backend giriş noktası ve FastAPI yapılandırması
+│   ├── Dockerfile                 # Backend Docker imaj tanımı
+│   └── requirements.txt           # Python bağımlılıkları (fastapi, uvicorn vb.)
+│
+├── ai-service/                    # Yapay Zeka Servisi (Python)
+│   ├── main.py                    # Gemini API & deterministik fallback API kodu
+│   ├── Dockerfile                 # AI Servis Docker imaj tanımı
+│   └── requirements.txt           # AI bağımlılıkları (fastapi, httpx vb.)
+│
+├── frontend/                      # Web Arayüzü (HTML, JS, CSS)
+│   ├── index.html                 # Kullanıcı paneli ana arayüz dosyası
+│   ├── cytoscape.min.js           # Graf çizim kütüphanesi
+│   ├── nginx.conf                 # Frontend'i yayınlayan Nginx ayarı
+│   ├── Dockerfile                 # Frontend Docker imaj tanımı
+│   └── src/                       # Arayüzün JavaScript mantığı ve stilleri
+│
+├── docs/                          # Proje Dokümantasyonu
+│   └── PROJE_RAPORU.md            # Ekip, Big-O analizleri ve UML dökümleri
+│
+├── docker-compose.yml             # 3 servisi birbirine bağlayan Docker Compose ayarı
+└── .gitignore                     # Git'e eklenmeyecek dosyalar listesi
 ```
 
 ---
