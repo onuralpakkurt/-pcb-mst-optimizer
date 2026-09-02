@@ -12,7 +12,7 @@ Bileşenler birer **düğüm**, aralarında çekilebilecek olası bağlantılar 
 ##  Detaylı Proje Raporu
 
 > ##  **[Tam Proje Raporu → `docs/PROJE_RAPORU.md`](docs/PROJE_RAPORU.md)**
-> **Youtube Proje Anlatım Linki:https://youtu.be/mBiK__LdnnA**
+
 >
 > **UML diyagramları · Big-O (zaman/uzay) analizi · AI prompt dökümü · test sonuçları** 
 
